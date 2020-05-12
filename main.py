@@ -11,6 +11,8 @@ import gmailreader
 import transaction
 import gui
 
+from logger import log
+
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
           'https://www.googleapis.com/auth/gmail.readonly']
 
@@ -41,11 +43,15 @@ def auth():
 
 
 def initialise_app():
+    log.info("Initialising app..")
+
     # authorize app to read emails
+    log.info("Getting gmail credentials and building service")
     creds = auth()
-    service = build('gmail', 'v1', credentials=creds)
+    service = build('gmail', 'v1', credentials=creds, cache_discovery=False)
 
     # authorize app to access google sheets
+    log.info("Getting sheets credentials and building service")
     gc = gspread.oauth()
     sheet = gc.open_by_key(SHEET_ID).worksheet('Transactions')
     categories = gc.open_by_key(SHEET_ID).worksheet('Categories').col_values(1)[1:]
@@ -55,12 +61,22 @@ def initialise_app():
 
 
 def main():
+    log.info("App running")
     service, sheet, categories, accounts = initialise_app()
+    log.info("App initialised")
 
+    log.info("Retrieving new gmail messages")
     transactions = gmailreader.get_messages(service)
     if transactions:
+        log.info("New transactions found. Opening GUI for user input")
         transactions = gui.update_transactions_via_gui(transactions, categories, accounts)
-    transaction.update_transactions_to_sheet(sheet, transactions)
+        log.info("Updating transactions to sheet")
+        transaction.update_transactions_to_sheet(sheet, transactions)
+
+    else:
+        log.info("No new transactions found")
+
+    log.info("Process completed")
 
 
 if __name__ == '__main__':
