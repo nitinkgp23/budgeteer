@@ -60,4 +60,4 @@ class ColoredLogger(logging.Logger):
 
 logging.setLoggerClass(ColoredLogger)
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)

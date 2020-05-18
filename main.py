@@ -6,6 +6,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
+import socket
+
 import gspread
 import gmailreader
 import transaction
@@ -42,8 +44,22 @@ def auth():
     return creds
 
 
+def wait_for_internet_connection():
+    while True:
+        try:
+            # connect to the host -- tells us if the host is actually
+            # reachable
+            socket.create_connection(("www.google.com", 80))
+            return True
+        except OSError:
+            pass
+
+        return False
+
+
 def initialise_app():
     log.info("Initialising app..")
+    # wait_for_internet_connection()
 
     # authorize app to read emails
     log.info("Getting gmail credentials and building service")
