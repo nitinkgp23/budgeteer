@@ -28,7 +28,9 @@ def update_transactions_to_sheet(sheet, transactions):
                negate_amount(transaction.amount), transaction.account, transaction.id] for transaction in transactions
               if transaction.isValid]
 
-    return sheet.append_rows(values=values,
+    return sheet.insert_rows(values=values,
+                             row=2,
+                             # table_range='B3',
                              value_input_option='USER_ENTERED',
-                             insert_data_option='INSERT_ROWS',
+                             # insert_data_option='INSERT_ROWS',
                              )

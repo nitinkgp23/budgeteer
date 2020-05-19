@@ -26,7 +26,7 @@ def splitwise(message_dict):
                 'amount': _parse_number(text[text.index('You owe')+7:])[0],
                 'desc': text.split('“')[1].split('”')[0],
                 'account': 'Splitwise',
-                '_id': None,
+                '_id': ' ',
                 'category': text[text.index(message_dict['Date'][:4]):].split()[1]
     }
 
