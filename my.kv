@@ -1,0 +1,109 @@
+Screen:
+
+    MDToolbar:
+        id: toolbar
+        pos_hint: {"top": 1}
+        elevation: 10
+        title: "Budget Tracker"
+        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+
+    NavigationLayout:
+        x: toolbar.height
+        id: nav_layout
+
+        ScreenManager:
+            id : screen_manager
+            HomeScreen:
+                screen_manager: screen_manager
+            SummaryScreen:
+                screen_manager: screen_manager
+            TransactionScreen:
+                screen_manager: screen_manager
+
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:
+                nav_drawer: nav_drawer
+                screen_manager: screen_manager
+
+<ContentNavigationDrawer>:
+    ScrollView:
+
+        MDList:
+            OneLineAvatarListItem:
+                text: "Home"
+                on_release:
+                    root.nav_drawer.set_state("close")
+                ImageLeftWidget:
+                    source: "assets/logo/baseline_home_black_18dp.png"
+
+            OneLineIconListItem:
+                text: "Settings"
+                on_release:
+                    root.nav_drawer.set_state("close")
+                ImageLeftWidget:
+                    source: "assets/logo/baseline_settings_black_18dp.png"
+
+
+<HomeScreen>:
+    name: "home_screen"
+    MDFillRoundFlatButton:
+        text: "Account Summary"
+        pos_hint: {"center_x":0.5, "center_y":0.45}
+        on_release:
+            root.screen_manager.current = "summary_screen"
+            root.manager.transition.direction = "left"
+
+<SummaryScreen>:
+    name: "summary_screen"
+    MDFillRoundFlatButton:
+        text: "Summary here"
+        pos_hint: {"center_x":0.5, "center_y":0.55}
+
+    MDFillRoundFlatButton:
+        text: "Go Back"
+        pos_hint: {"center_x":0.5, "center_y":0.45}
+        on_release:
+            root.screen_manager.current = "home_screen"
+            root.manager.transition.direction = "right"
+
+
+<TransactionScreen>:
+    name: "transaction_screen"
+
+<SpinnerMDDialog>:
+    name: "spinner_dialogbox"
+
+<TransactionCardContent>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "300dp"
+    pos_hint: {"center_x":0.5, "center_y":0.5}
+
+    MDTextField:
+        id: descText
+        hint_text: "Description"
+
+    MDTextField:
+        id: amountText
+        hint_text: "Amount"
+
+    MDTextField:
+        id: categoryText
+        hint_text: "Category"
+        on_focus: root.open_menuCategory()
+
+    MDTextField:
+        id: accountText
+        hint_text: "Account"
+        readonly: True
+
+    MDTextField:
+        id: dateText
+        hint_text: "Date"
+        on_focus: root.show_date_picker()
+
+<AccountDropDown>:

@@ -1,0 +1,35 @@
+
+App opens
+
+Loading image
+
+
+Main page
+1. Get summary
+2. Add transactions
+3. Navigation bar to the left
+
+Summary Page
+------------
+
+Navigation bar
+--------------
+Home, Settings, Exit
+
+
+Transactions Page
+-----------------
+Reading emails (1/10)
+
+Flashcards/boxes for each transaction
+where each contains:
+Transaction name, amount, other details
+Accept, Reject button
+
+10 transaction added, green checkbox
+
+Loop
+Add any more transactions?
+with text fields
+transaction added, green checkbox
+

@@ -1,4 +1,19 @@
-from __future__ import print_function
+from kivy.lang import Builder
+from kivy.loader import Loader
+
+from kivy.uix.screenmanager import ScreenManager
+from kivy.clock import Clock
+from kivymd.app import MDApp
+
+from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import ObjectProperty
+# from kivy.uix.behaviors import T
+
+from datetime import datetime
+
+from backend.transaction import Transaction
+from backend.main_back import auth
+
 import pickle
 import os.path
 
@@ -9,9 +24,9 @@ from googleapiclient.discovery import build
 import socket
 
 import gspread
-import gmailreader
-import transaction
-import gui
+
+from layout.screens import HomeScreen, SummaryScreen, TransactionScreen
+import time
 
 from logger import log
 
@@ -21,79 +36,70 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
 SHEET_ID = '1__g3p95s-w7dWAG7AlXMaxsk8oH9-ZxUhhBTyWjZwa0'
 
 
-def auth():
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('files/token.pickle'):
-        with open('files/token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'files/credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('files/token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
-    return creds
+def transaction_factory():
+    t1 = Transaction(date=datetime.today(), desc="Descrip", account="SBI", amount="500", category="Groceries",
+                     _id="123")
+    t2 = Transaction(date=datetime.today(), desc="hello", account="HDFC", amount="100", category="Groceries", _id="11")
+    t3 = Transaction(date=datetime.today(), desc="bye", account="Splitwise", amount="20", category="Transfer", _id="2")
+    data = [t1, t2, t3]
+    return iter(data), len(data)
 
 
-def wait_for_internet_connection():
-    while True:
-        try:
-            # connect to the host -- tells us if the host is actually
-            # reachable
-            socket.create_connection(("www.google.com", 80))
-            return True
-        except OSError:
-            pass
-
-        return False
+class SpinnerMDDialog(BoxLayout):
+    pass
 
 
-def initialise_app():
-    log.info("Initialising app..")
-    # wait_for_internet_connection()
-
-    # authorize app to read emails
-    log.info("Getting gmail credentials and building service")
-    creds = auth()
-    service = build('gmail', 'v1', credentials=creds, cache_discovery=False)
-
-    # authorize app to access google sheets
-    log.info("Getting sheets credentials and building service")
-    gc = gspread.oauth()
-    sheet = gc.open_by_key(SHEET_ID).worksheet('Transactions')
-    categories = gc.open_by_key(SHEET_ID).worksheet('Categories').col_values(1)[1:]
-    accounts = gc.open_by_key(SHEET_ID).worksheet('Balance History').col_values(4)[1:]
-
-    return service, sheet, categories, accounts
+class WindowManager(ScreenManager):
+    pass
 
 
-def main():
-    log.info("App running")
-    service, sheet, categories, accounts = initialise_app()
-    log.info("App initialised")
-
-    log.info("Retrieving new gmail messages")
-    transactions = gmailreader.get_messages(service)
-    if transactions:
-        log.info("New transactions found. Opening GUI for user input")
-        transactions = gui.update_transactions_via_gui(transactions, categories, accounts)
-        log.info("Updating transactions to sheet")
-        transaction.update_transactions_to_sheet(sheet, transactions)
-
-    else:
-        log.info("No new transactions found")
-
-    log.info("Process completed")
+class ContentNavigationDrawer(BoxLayout):
+    screen_manager = ObjectProperty()
+    nav_drawer = ObjectProperty()
 
 
-if __name__ == '__main__':
-    main()
+class BudgeteerApp(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.theme_cls.primary_palette = "Teal"
+        self.dialog_change_theme = None
+        self.toolbar = None
+        self.root_widget = None
+        self.data_screens = {}
+        Loader.loading_image = f"assets/logo/kivymd_logo.png"
+        self.creds = {}
+
+    def build(self):
+        # self.theme_cls.theme_style = "Dark"
+        self.root_widget = Builder.load_file("my.kv")
+        # Clock.schedule_once(self.screen_switch_one, 36)  # clock callback for the first screen
+        # Clock.schedule_once(self.screen_switch_two, 4)  # clock callback for the second screen
+        # self.initialise_app()
+        Clock.schedule_once(self.initialise_app)
+        # print("Hello")
+        return self.root_widget
+
+    def initialise_app(self, event=None):
+        log.info("Initialising app..")
+        # wait_for_internet_connection()
+
+        # authorize app to read emails
+        log.info("Getting gmail credentials and building service")
+        creds = auth()
+        service = build('gmail', 'v1', credentials=creds, cache_discovery=False)
+
+        # authorize app to access google sheets
+        log.info("Getting sheets credentials and building service")
+        gc = gspread.oauth()
+        sheet = gc.open_by_key(SHEET_ID).worksheet('Transactions')
+        categories = gc.open_by_key(SHEET_ID).worksheet('Categories').col_values(1)[1:]
+        accounts = gc.open_by_key(SHEET_ID).worksheet('Balance History').col_values(4)[1:]
+
+        self.creds = {'service': service,
+                      'sheet': sheet,
+                      'categories': categories,
+                      'accounts': accounts}
+
+
+if __name__ == "__main__":
+    BudgeteerApp().run()
