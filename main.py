@@ -1,34 +1,24 @@
-from kivy.lang import Builder
-from kivy.loader import Loader
-
-from kivy.uix.screenmanager import ScreenManager
-from kivy.clock import Clock
-from kivymd.app import MDApp
-
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
-# from kivy.uix.behaviors import T
+# print("Python : Inside app")
 
 from datetime import datetime
 
-from backend.transaction import Transaction
-from backend.main_back import auth
-
-import pickle
-import os.path
-
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-
-import socket
-
 import gspread
+from googleapiclient.discovery import build
+from kivy.clock import Clock
+from kivy.lang import Builder
+from kivy.loader import Loader
+from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager
+from kivymd.app import MDApp
 
 from layout.screens import HomeScreen, SummaryScreen, TransactionScreen
-import time
+from backend.main_back import auth
+from backend.transaction import Transaction
 
 from logger import log
+
+# from kivy.uix.behaviors import T
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
           'https://www.googleapis.com/auth/gmail.readonly']

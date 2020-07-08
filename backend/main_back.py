@@ -1,17 +1,13 @@
 from __future__ import print_function
-import pickle
+
 import os.path
-
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-
+import pickle
 import socket
 
-import gspread
-from backend import transaction, gmailreader
-import gui
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
 
+from backend import transaction, gmailreader
 from logger import log
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
@@ -74,25 +70,25 @@ def wait_for_internet_connection():
 #
 #     return service, sheet, categories, accounts
 
-
-def main():
-    log.info("App running")
-    service, sheet, categories, accounts = initialise_app()
-    log.info("App initialised")
-
-    log.info("Retrieving new gmail messages")
-    transactions = gmailreader.get_messages(service)
-    if transactions:
-        log.info("New transactions found. Opening GUI for user input")
-        transactions = gui.update_transactions_via_gui(transactions, categories, accounts)
-        log.info("Updating transactions to sheet")
-        transaction.update_transactions_to_sheet(sheet, transactions)
-
-    else:
-        log.info("No new transactions found")
-
-    log.info("Process completed")
-
-
-if __name__ == '__main__':
-    main()
+#
+# def main():
+#     log.info("App running")
+#     service, sheet, categories, accounts = initialise_app()
+#     log.info("App initialised")
+#
+#     log.info("Retrieving new gmail messages")
+#     transactions = gmailreader.get_messages(service)
+#     if transactions:
+#         log.info("New transactions found. Opening GUI for user input")
+#         transactions = gui.update_transactions_via_gui(transactions, categories, accounts)
+#         log.info("Updating transactions to sheet")
+#         transaction.update_transactions_to_sheet(sheet, transactions)
+#
+#     else:
+#         log.info("No new transactions found")
+#
+#     log.info("Process completed")
+#
+#
+# if __name__ == '__main__':
+#     main()

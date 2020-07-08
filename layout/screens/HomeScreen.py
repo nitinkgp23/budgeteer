@@ -1,48 +1,20 @@
 
-import time, threading
+import threading
+from datetime import datetime
 
+from kivy.metrics import dp
 from kivy.uix.screenmanager import Screen
-
+from kivymd.app import MDApp
 from kivymd.uix.button import MDFillRoundFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivy.metrics import dp
-# from kivy.uix.behaviors import T
 
-from datetime import datetime
-
+from backend import gmailreader
 from backend.transaction import Transaction
-
-from kivy.lang import Builder
-from kivy.loader import Loader
-
-from kivy.uix.screenmanager import ScreenManager
-from backend import transaction, gmailreader
-
-from kivymd.app import MDApp
-
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
-# from kivy.uix.behaviors import T
-
-from datetime import datetime
-
-from backend.transaction import Transaction
-from backend.main_back import auth
-
-import pickle
-import os.path
-
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-
-import socket
-
-import gspread
-
-import time
-
 from logger import log
+
+
+# from kivy.uix.behaviors import T
+# from kivy.uix.behaviors import T
 
 
 def transaction_factory():

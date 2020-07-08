@@ -1,50 +1,21 @@
-import time, threading
+import threading
+from datetime import datetime
 
+from kivy.metrics import dp
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+from kivymd.app import MDApp
+from kivymd.uix.button import MDFillRoundFlatButton, MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.picker import MDDatePicker
 
-from kivymd.app import MDApp
-
-from kivymd.uix.button import MDFillRoundFlatButton, MDFlatButton
-from kivymd.uix.menu import MDDropdownMenu
-from kivy.uix.boxlayout import BoxLayout
-from kivymd.uix.dialog import MDDialog
-from kivy.metrics import dp
-# from kivy.uix.behaviors import T
-
-from datetime import datetime
-
-from kivy.lang import Builder
-from kivy.loader import Loader
-
-from kivy.uix.screenmanager import ScreenManager
-from kivy.clock import Clock
-from kivymd.app import MDApp
-
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
-# from kivy.uix.behaviors import T
-
-from datetime import datetime
-
-from backend.transaction import Transaction
-from backend.main_back import auth
-
-import pickle
-import os.path
-
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-
-import socket
-
-import gspread
 from backend import transaction
-
-import time
-
 from logger import log
+
+
+# from kivy.uix.behaviors import T
+# from kivy.uix.behaviors import T
 
 
 class TransactionCardContent(BoxLayout):
